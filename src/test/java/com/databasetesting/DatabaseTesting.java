@@ -5,9 +5,13 @@
 */
 package com.databasetesting;
 
+import org.testng.Assert;
+
 import org.testng.annotations.*;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseTesting {
     /** declared static sql interface variables */
@@ -27,12 +31,13 @@ public class DatabaseTesting {
     @BeforeTest
     public void setUp() {
         try {
-            //make a database connection
+            //created a database connection
             Class.forName("com.mysql.cj.jdbc.Driver");
             //get connection to database
             connection = DriverManager.getConnection(DB_URL, DB_USERName, DB_PASSWORD);
             //statement object is created to send request to database
             statement = connection.createStatement();
+
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -48,8 +53,12 @@ public class DatabaseTesting {
             sqlQuery = "insert into employee_data (employee_id, employee_name, mobile_number, salary) " +
                        "values(1, 'dinesh', '8919105923', 40000.00), (2, 'pavan', '9542409463', 30000.00)," +
                        "(3, 'murali', '8919502395', 35000.00);";
-            statement.executeUpdate(sqlQuery);
-        } catch(Exception e) {
+
+            int result = statement.executeUpdate(sqlQuery);
+
+            //assertion the number of employees data is added to database
+            Assert.assertEquals(result, 3);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -61,8 +70,12 @@ public class DatabaseTesting {
     @Test
     public void test_WhenDataIs_UpdatedIntoTable_OfDatabase() {
         try {
-            sqlQuery = "update employee_data set mobile_number = '9545632564' where employee_name = 'murali'; ";
-            statement.executeUpdate(sqlQuery);
+            sqlQuery = "update employee_data set mobile_number = '9545632584' where employee_name = 'murali';";
+
+            int result = statement.executeUpdate(sqlQuery);
+
+            //assertion the query is executed or not
+            Assert.assertEquals(result, 1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,8 +88,11 @@ public class DatabaseTesting {
     @Test
     public void test_WhenAllData_IsRetrieved_FromATable_OfDatabase() {
         try {
+            List<Object[]> retrievedData = new ArrayList<>();
+
             sqlQuery = "select * from employee_data";
             ResultSet resultSet = statement.executeQuery(sqlQuery);
+
             while (resultSet.next()) {
                 int id = resultSet.getInt(1);
                 String name = resultSet.getString(2);
@@ -84,7 +100,14 @@ public class DatabaseTesting {
                 double salary = resultSet.getDouble(4);
 
                 System.out.println(id+" "+name+" "+mobile_number+" "+salary);
+
+                Object[] set = new Object[]{id, name, mobile_number, salary};
+                retrievedData.add(set);
             }
+
+            //assertion the number of employees data is retrieved
+            Assert.assertEquals(retrievedData.size(), 3);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -98,7 +121,11 @@ public class DatabaseTesting {
     public void test_WhenAData_IsDeleted_FromATable_OfDatabase() {
         try {
             sqlQuery = "delete from employee_data where employee_name = 'murali'";
-            statement.execute(sqlQuery);
+
+            int result = statement.executeUpdate(sqlQuery);
+
+            //assertion the query is executed or not
+            Assert.assertEquals(result, 1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
