@@ -21,7 +21,7 @@ public class DatabaseTesting {
     static String sqlQuery;
     /** declared and initialized constant variables */
     public static String DB_URL = "jdbc:mysql://localhost/employee_data?useSSL=false";
-    public static String DB_USERName = "root";
+    public static String DB_USERNAME = "root";
     public static String DB_PASSWORD = "Dinnu@247";
 
     /**
@@ -34,7 +34,7 @@ public class DatabaseTesting {
             //created a database connection
             Class.forName("com.mysql.cj.jdbc.Driver");
             //get connection to database
-            connection = DriverManager.getConnection(DB_URL, DB_USERName, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
             //statement object is created to send request to database
             statement = connection.createStatement();
 
@@ -54,10 +54,10 @@ public class DatabaseTesting {
                        "values(1, 'dinesh', '8919105923', 40000.00), (2, 'pavan', '9542409463', 30000.00)," +
                        "(3, 'murali', '8919502395', 35000.00);";
 
-            int result = statement.executeUpdate(sqlQuery);
+            int noOfRowsAffected = statement.executeUpdate(sqlQuery);
 
             //assertion the number of employees data is added to database
-            Assert.assertEquals(result, 3);
+            Assert.assertEquals(noOfRowsAffected, 3);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,10 +72,10 @@ public class DatabaseTesting {
         try {
             sqlQuery = "update employee_data set mobile_number = '9545632584' where employee_name = 'murali';";
 
-            int result = statement.executeUpdate(sqlQuery);
+            int noOfRowsAffected = statement.executeUpdate(sqlQuery);
 
             //assertion the query is executed or not
-            Assert.assertEquals(result, 1);
+            Assert.assertEquals(noOfRowsAffected, 1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -122,10 +122,10 @@ public class DatabaseTesting {
         try {
             sqlQuery = "delete from employee_data where employee_name = 'murali'";
 
-            int result = statement.executeUpdate(sqlQuery);
+            int noOfRowsAffected = statement.executeUpdate(sqlQuery);
 
             //assertion the query is executed or not
-            Assert.assertEquals(result, 1);
+            Assert.assertEquals(noOfRowsAffected, 1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
